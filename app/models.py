@@ -18,6 +18,14 @@ class User(db.Document):
         return check_password_hash(self.password_hash, password)
 
 
+class TokenBlackList(db.Document):
+    jti = db.StringField(max_length=36)
+    token_type = db.StringField(max_length=10)
+    user_identity = db.StringField(max_length=50)
+    revoked = db.BooleanField()
+    expires = db.DateTimeField()
+
+
 class NewsPost(db.Document):
     post_body = db.StringField()
     author = db.ReferenceField(User)
