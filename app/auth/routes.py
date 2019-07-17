@@ -18,8 +18,14 @@ def login():
         return jsonify({
             'msg': 'Missing username or password parameter 400'
         }), 400
-    user = User.objects.get(username=username)
-    if not user or user.check_password(password):
+
+    # TODO: Set exception
+    try:
+        user = User.objects.get(username=username)
+    except:
+        user = None
+
+    if not user or not user.check_password(password):
         return jsonify({
             'msg': 'Invalid username or password 401'
         }), 401
@@ -27,7 +33,7 @@ def login():
     return jsonify(access_token=access_token), 200
 
 
-@bp.route('/logout', methods=['POST'])
+@bp.route('/logout', methods=['DELETE'])
 @jwt_required
 def logout():
     return 'protected by JWT'
