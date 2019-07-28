@@ -14,7 +14,7 @@ def get_news_posts():
 
 
 @bp.route('/<news_post_id>', methods=['GET'])
-def get_news_post():
+def get_news_post(news_post_id):
     """ Return one News post by it ID """
     return jsonify({
         "msg": "get_news_post"
@@ -30,7 +30,7 @@ def add_news_post():
 
 
 @bp.route('/<news_post_id>', methods=['PUT'])
-def update_news_post():
+def update_news_post(news_post_id):
     """ Return True if post updated """
     return jsonify({
         "msg": "update_news_post"
@@ -38,7 +38,7 @@ def update_news_post():
 
 
 @bp.route('/<news_post_id>', methods=['DELETE'])
-def delete_news_post():
+def delete_news_post(news_post_id):
     """ Return True if post deleted """
     return jsonify({
         "msg": "delete_news_post"
