@@ -22,4 +22,7 @@ def create_app(config_class=Config):
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
+    from app.news import bp as news_bp
+    app.register_blueprint(news_bp, url_prefix='/news')
+
     return app

@@ -9,6 +9,7 @@ class User(Document):
     username = fl.StringField(max_length=20)
     ip4_address = fl.StringField(max_length=15, required=True) # indexed
     password_hash = fl.StringField()
+    refresh_token = fl.StringField()
     date_created = fl.DateTimeField(default=datetime.utcnow)
     date_edited = fl.DateTimeField(default=datetime.utcnow)
 
