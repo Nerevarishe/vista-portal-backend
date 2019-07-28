@@ -1,39 +1,59 @@
-from flask import jsonify, request
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-# from flask_mongoengine import BaseQuerySet
+from flask import jsonify, request, abort
+from flask_jwt_extended import jwt_required, jwt_refresh_token_required, get_jwt_identity, create_access_token, \
+    create_refresh_token
 
-from app.models import User
 from app.auth import bp
+from app.models import User
 
 
 @bp.route('/login', methods=['POST'])
 def login():
-    if not request.is_json:
-        return jsonify({
-            'msg': 'Missing JSON in request 400'
-        }), 400
+    if not request.json['username'] or not request.json['password']:
+        abort(400)
     username = request.json.get('username', None)
     password = request.json.get('password', None)
-    if not username or not password:
-        return jsonify({
-            'msg': 'Missing username or password parameter 400'
-        }), 400
 
-    # TODO: Set exception
     try:
         user = User.objects.get(username=username)
     except:
-        user = None
-
-    if not user or not user.check_password(password):
-        return jsonify({
-            'msg': 'Invalid username or password 401'
-        }), 401
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token), 200
+        abort(401)
+    else:
+        if user.check_password(password):
+            access_token = create_access_token(identity=username)
+            refresh_token = create_refresh_token(identity=username)
+            user.refresh_token = refresh_token
+            user.save()
+            return jsonify(access_token=access_token, refresh_token=refresh_token)
 
 
 @bp.route('/logout', methods=['DELETE'])
 @jwt_required
 def logout():
-    return 'protected by JWT'
+    current_user = User.objects.get_or_404(username=get_jwt_identity())
+    current_user.refresh_token = ''
+    current_user.save()
+
+    return 'logout page'
+
+
+@bp.route('/refresh', methods=['POST'])
+@jwt_refresh_token_required
+def refresh_tokens():
+    current_user = User.objects.get_or_404(username=get_jwt_identity())
+
+    if request.headers['Authorization'].split(' ')[1] == current_user.refresh_token:
+        access_token = create_access_token(identity=current_user.username)
+        refresh_token = create_refresh_token(identity=current_user.username)
+        current_user.refresh_token = refresh_token
+        current_user.save()
+        return jsonify(access_token=access_token, refresh_token=refresh_token)
+    abort(401)
+
+
+@bp.route('/test', methods=['GET'])
+@jwt_required
+def test_route():
+    return jsonify({
+        'msg': 'ok',
+        'destination': 'test auth route'
+    }), 200
