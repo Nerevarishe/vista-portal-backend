@@ -48,32 +48,19 @@ def get_news_post(news_post_id):
 
 @bp.route('/', methods=['POST'])
 def add_news_post():
-    """ Return status 201 if post added to DB """
 
-    post1 = NewsPost(post_body='post 1')
-    post1.save()
-    post2 = NewsPost(post_body='post 2')
-    post2.save()
-    post3 = NewsPost(post_body='post 3')
-    post3.save()
-    post4 = NewsPost(post_body='post 4')
-    post4.save()
-    post5 = NewsPost(post_body='post 5')
-    post5.save()
-    post6 = NewsPost(post_body='post 6')
-    post6.save()
-    post7 = NewsPost(post_body='post 7')
-    post7.save()
-    post8 = NewsPost(post_body='post 8')
-    post8.save()
-    post9 = NewsPost(post_body='post 9')
-    post9.save()
-    post10 = NewsPost(post_body='post 10')
-    post10.save()
+    """ Return status 201 if post added to DB and post ID"""
 
-    return jsonify({
-        "msg": "Created"
-    }), 201
+    if 'postBody' in request.json and request.json['postBody'] != '':
+        post = NewsPost()
+        post.post_body = request.json['postBody']
+        post.save()
+
+        return jsonify({
+            "msg": "OK",
+            "postId": str(post.id)
+        }), 201
+    abort(400)
 
 
 @bp.route('/<news_post_id>', methods=['PUT'])
