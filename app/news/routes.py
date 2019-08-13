@@ -8,18 +8,30 @@ from app.models import NewsPost
 @bp.route('/', methods=['GET'])
 def get_news_posts():
     """ Return paginated news posts """
-    _posts = []
-    next_page_url = 'next_page_url'
-    prev_page_url = 'prev_page_url'
 
-    posts = NewsPost.objects.paginate(page=1, per_page=current_app.config['NEWS_POST_PER_PAGE'])
+    # Set page and per_page vars from request for pagination
+    page = 1
+    per_page = current_app.config['NEWS_POST_PER_PAGE']
+
+    if 'page' in request.args:
+        if request.args['page'] != '':
+            page = int(request.args['page'])
+    if 'per_page' in request.args:
+        if request.args['per_page'] != '':
+            per_page = int(request.args['per_page'])
+
+    # Get paginated posts
+    _posts = []
+    posts = NewsPost.objects.paginate(page=page, per_page=per_page)
     for post in posts.items:
         _posts.append(post)
 
     return jsonify({
         "posts": _posts,
-        "nextPageUrl": next_page_url,
-        "prevPageUrl": prev_page_url
+        "postsPageHasNext": posts.has_next,
+        "postsPageNextPageNumber": posts.next_num,
+        "postsPageHasPrev": posts.has_prev,
+        "postsPagePrevPageNumber": posts.prev_num
     })
 
 
