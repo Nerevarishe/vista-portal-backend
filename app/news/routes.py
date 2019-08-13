@@ -37,9 +37,12 @@ def get_news_posts():
 
 @bp.route('/<news_post_id>', methods=['GET'])
 def get_news_post(news_post_id):
+
     """ Return one News post by it ID """
+
+    post = NewsPost.objects.get_or_404(id=news_post_id)
     return jsonify({
-        "msg": "get_news_post"
+        "post": post
     })
 
 
@@ -83,7 +86,10 @@ def update_news_post(news_post_id):
 
 @bp.route('/<news_post_id>', methods=['DELETE'])
 def delete_news_post(news_post_id):
+
     """ Return True if post deleted """
+    post = NewsPost.objects.get_or_404(id=news_post_id)
+    post.delete()
     return jsonify({
-        "msg": "delete_news_post"
+        "msg": "True"
     })
