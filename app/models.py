@@ -5,6 +5,11 @@ from flask_mongoengine import Document
 from mongoengine import fields as fl
 
 
+def get_current_date():
+    utc_now = datetime.utcnow()
+    return utc_now.date()
+
+
 class User(Document):
     username = fl.StringField(max_length=20)
     ip4_address = fl.StringField(max_length=15, required=True) # indexed
@@ -41,8 +46,8 @@ class DefecturaCard(Document):
     comment = fl.StringField(max_length=200)
     employee_name = fl.StringField(max_length=30)
     in_zd = fl.BooleanField(default=False) # indexed
-    date = fl.DateField() # indexed
-    user = fl.ReferenceField(User)
+    date = fl.DateField(default=get_current_date) # indexed
+    # user = fl.ReferenceField(User)
     date_created = fl.DateTimeField(default=datetime.utcnow)
     date_edited = fl.DateTimeField(default=datetime.utcnow)
 
