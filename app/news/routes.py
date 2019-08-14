@@ -41,7 +41,7 @@ def get_news_post(news_post_id):
 
     """ Return one News post by it ID """
 
-    post = NewsPost.objects.get_or_404(id=news_post_id)
+    post = NewsPost.objects.first_or_404(id=news_post_id)
     return jsonify({
         "post": post
     })
@@ -70,7 +70,7 @@ def update_news_post(news_post_id):
     """ Return OK if post updated """
 
     if 'postBody' in request.json and request.json['postBody'] != '':
-        post = NewsPost.objects.get_or_404(id=news_post_id)
+        post = NewsPost.objects.first_or_404(id=news_post_id)
         if post.post_body != request.json['postBody']:
             post.post_body = request.json['postBody']
             post.date_edited = datetime.utcnow()
@@ -90,7 +90,7 @@ def delete_news_post(news_post_id):
 
     """ Return True if post deleted """
 
-    post = NewsPost.objects.get_or_404(id=news_post_id)
+    post = NewsPost.objects.first_or_404(id=news_post_id)
     post.delete()
     return jsonify({
         "msg": "True"
