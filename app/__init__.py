@@ -25,4 +25,7 @@ def create_app(config_class=Config):
     from app.news import bp as news_bp
     app.register_blueprint(news_bp, url_prefix='/news')
 
+    from app.defectura import bp as dedectura_bp
+    app.register_blueprint(dedectura_bp, url_prefix='/defectura')
+
     return app
