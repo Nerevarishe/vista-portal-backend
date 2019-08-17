@@ -23,6 +23,13 @@ def not_found(error):
     })), 404
 
 
+@bp.app_errorhandler(405)
+def not_found(error):
+    return make_response(jsonify({
+        'error': '405 Method Not Allowed'
+    })), 405
+
+
 @bp.app_errorhandler(500)
 def bad_request(error):
     return make_response(jsonify({
