@@ -52,9 +52,23 @@ class DefecturaCard(Document):
     date_edited = fl.DateTimeField(default=datetime.utcnow)
 
 
-class DeferredDrug(Document):
-    drug_name = fl.StringField(max_length=60) # indexed
-    drug_amount = fl.IntField(max_value=100)
-    comment = fl.StringField(max_length=200)
-    date_created = fl.DateTimeField(default=datetime.utcnow)
-    date_edited = fl.DateTimeField(default=datetime.utcnow)
+class DrugstoreList(Document):
+    ds_name = fl.StringField(max_length=50)
+    ds_address = fl.StringField(max_length=200)
+    ds_worktime = fl.StringField(max_length=11)
+    ds_phone = fl.StringField(max_length=16)
+    ds_ip_phone = fl.StringField(max_length=4)
+
+
+class ServiceCenterList(Document):
+    brands = fl.StringField(max_length=20)
+    sc_address = fl.StringField(max_length=50)
+    sc_phone = fl.StringField(max_length=16)
+
+
+# class DeferredDrug(Document):
+#     drug_name = fl.StringField(max_length=60) # indexed
+#     drug_amount = fl.IntField(max_value=100)
+#     comment = fl.StringField(max_length=200)
+#     date_created = fl.DateTimeField(default=datetime.utcnow)
+#     date_edited = fl.DateTimeField(default=datetime.utcnow)
