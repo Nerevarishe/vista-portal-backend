@@ -52,13 +52,15 @@ class DefecturaCard(Document):
     date_edited = fl.DateTimeField(default=datetime.utcnow)
 
 
-class DrugstoreList(Document):
+class Drugstore(Document):
     ds_name = fl.StringField(max_length=50)
     ds_address = fl.StringField(max_length=200)
     ds_worktime = fl.StringField(max_length=11)
     ds_phone = fl.StringField(max_length=16)
     ds_ip_phone = fl.StringField(max_length=4)
 
+    def fields(self):
+        return [self.ds_name, self.ds_address, ]
 
 class ServiceCenterList(Document):
     brands = fl.StringField(max_length=20)
