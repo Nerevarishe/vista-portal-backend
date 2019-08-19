@@ -1,7 +1,7 @@
 from flask import jsonify, request, abort, current_app
 
 from app.spravka import bp
-from app.models import Drugstore
+from app.models import Drugstore, get_all_fields
 
 
 @bp.route('/drugstores/', methods=['GET'])
@@ -34,11 +34,7 @@ def add_drugstore():
     """ Return created drugstore ID """
 
     drugstore = Drugstore()
-    drugstore_model_fields = []
-
-    for field in dir(Drugstore):
-        if field[:2] == 'ds':
-            drugstore_model_fields.append(field)
+    drugstore_model_fields = get_all_fields(dir(drugstore), 'ds')
 
     for field in drugstore_model_fields:
         drugstore[field] = request.json[field]

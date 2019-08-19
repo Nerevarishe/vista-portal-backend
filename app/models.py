@@ -10,6 +10,19 @@ def get_current_date():
     return utc_now.date()
 
 
+def get_all_fields(fields, search_query: str):
+
+    """ Return all user defined fields from model class object
+     fields - must be dir(MyClass)
+     search_query - string - prefix for fields in class"""
+
+    model_fields = []
+    for field in fields:
+        if field[:len(search_query)] == search_query:
+            model_fields.append(field)
+    return model_fields
+
+
 class User(Document):
     username = fl.StringField(max_length=20)
     ip4_address = fl.StringField(max_length=15, required=True) # indexed
