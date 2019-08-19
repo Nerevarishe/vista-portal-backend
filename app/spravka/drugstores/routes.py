@@ -1,7 +1,7 @@
 from flask import jsonify, request, abort, current_app
 
 from app.spravka import bp
-from app.models import Drugstore, get_all_fields
+from app.models import Drugstore
 
 
 @bp.route('/drugstores/', methods=['GET'])
@@ -34,23 +34,41 @@ def add_drugstore():
     """ Return created drugstore ID """
 
     drugstore = Drugstore()
-    drugstore_model_fields = get_all_fields(dir(drugstore), 'ds')
 
-    for field in drugstore_model_fields:
+    for field in Drugstore.fields(Drugstore):
         drugstore[field] = request.json[field]
     drugstore.save()
 
     return jsonify({
             'msg': 'OK',
             'id': str(drugstore.id)
-    })
+    }), 201
 
 
 @bp.route('/drugstores/<drugstore_id>', methods=['PUT'])
 def update_drugstore(drugstore_id):
-    pass
+
+    """ Return OK if record updated """
+
+    drugstore = Drugstore.objects.get_or_404(id=drugstore_id)
+
+    for field in Drugstore.fields(Drugstore):
+        drugstore[field] = request.json[field]
+    drugstore.save()
+
+    return jsonify({
+        "msg": "OK"
+    })
 
 
 @bp.route('/drugstores/<drugstore_id>', methods=['DELETE'])
 def delete_drugstore(drugstore_id):
-    pass
+
+    """ Delete record by it ID and return OK """
+
+    drugstore = Drugstore.objects.get_or_404(id=drugstore_id)
+    drugstore.delete()
+
+    return jsonify({
+        "msg": "OK"
+    })
