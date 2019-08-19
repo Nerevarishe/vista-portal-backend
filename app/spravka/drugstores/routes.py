@@ -9,7 +9,7 @@ def get_all_drugstores():
 
     """ Return list of all drugstores """
 
-    drugstores = Drugstore.objects.get_or_404()
+    drugstores = Drugstore.objects.all()
 
     return jsonify({
         "drugstores": drugstores
@@ -33,21 +33,21 @@ def add_drugstore():
 
     """ Return created drugstore ID """
 
-    drugstore = enumerate(Drugstore())
-    a = 2+2
+    drugstore = Drugstore()
+    drugstore_model_fields = []
 
+    for field in dir(Drugstore):
+        if field[:2] == 'ds':
+            drugstore_model_fields.append(field)
 
+    for field in drugstore_model_fields:
+        drugstore[field] = request.json[field]
+    drugstore.save()
 
-    # ds_json_fields = ['dsName', 'dsAddress', 'dsWorkTime', 'dsPhone', 'dsIpPhone']
-    # ds_model_fields = ['ds_name', 'ds_address', 'ds_worktime', 'ds_phone', 'ds_ip_phone']
-    #
-    # for index, field in enumerate(ds_json_fields):
-    #     drugstore[ds_model_fields[index]] = request.json[field]
-    # drugstore.save()
-    # return jsonify({
-    #     "msg": "OK",
-    #     "dsId": str(drugstore.id)
-    # })
+    return jsonify({
+            'msg': 'OK',
+            'id': str(drugstore.id)
+    })
 
 
 @bp.route('/drugstores/<drugstore_id>', methods=['PUT'])

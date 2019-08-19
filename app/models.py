@@ -62,8 +62,9 @@ class Drugstore(Document):
     def fields(self):
         return [self.ds_name, self.ds_address, ]
 
+
 class ServiceCenterList(Document):
-    brands = fl.StringField(max_length=20)
+    sc_brands = fl.StringField(max_length=20)
     sc_address = fl.StringField(max_length=50)
     sc_phone = fl.StringField(max_length=16)
 
