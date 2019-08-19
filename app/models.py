@@ -5,22 +5,29 @@ from flask_mongoengine import Document
 from mongoengine import fields as fl
 
 
-def get_current_date():
-    utc_now = datetime.utcnow()
-    return utc_now.date()
+class VistaApiDocument(Document):
 
+    date_created = fl.DateTimeField(default=datetime.utcnow)
+    date_edited = fl.DateTimeField(default=datetime.utcnow)
 
-def get_all_fields(fields, search_query: str):
+    @staticmethod
+    def get_all_fields(document_class, search_query: str):
 
-    """ Return all user defined fields from model class object
-     fields - must be dir(MyClass)
-     search_query - string - prefix for fields in class"""
+        """ Return all user defined fields from model class object
+         fields - must be Class
+         search_query - string - prefix for fields in class"""
 
-    model_fields = []
-    for field in fields:
-        if field[:len(search_query)] == search_query:
-            model_fields.append(field)
-    return model_fields
+        model_fields = []
+        for field in dir(document_class):
+            if field[:len(search_query)] == search_query:
+                model_fields.append(field)
+        return model_fields
+
+    @staticmethod
+    def get_current_date():
+        return (datetime.utcnow()).date()
+
+    meta = {'allow_inheritance': True}
 
 
 class User(Document):
@@ -47,39 +54,38 @@ class User(Document):
 #     expires = fl.DateTimeField()
 
 
-class NewsPost(Document):
+class NewsPost(VistaApiDocument):
     post_body = fl.StringField()
-    author = fl.ReferenceField(User)
-    date_created = fl.DateTimeField(default=datetime.utcnow) # indexed
-    date_edited = fl.DateTimeField(default=datetime.utcnow)
+    # author = fl.ReferenceField(User)
 
 
-class DefecturaCard(Document):
+class DefecturaCard(VistaApiDocument):
     drug_name = fl.StringField(max_length=60)
     comment = fl.StringField(max_length=200)
     employee_name = fl.StringField(max_length=30)
     in_zd = fl.BooleanField(default=False) # indexed
-    date = fl.DateField(default=get_current_date) # indexed
+    date = fl.DateField(default=VistaApiDocument.get_current_date) # indexed
     # user = fl.ReferenceField(User)
-    date_created = fl.DateTimeField(default=datetime.utcnow)
-    date_edited = fl.DateTimeField(default=datetime.utcnow)
 
 
-class Drugstore(Document):
+class Drugstore(VistaApiDocument):
     ds_name = fl.StringField(max_length=50)
     ds_address = fl.StringField(max_length=200)
-    ds_worktime = fl.StringField(max_length=11)
+    ds_work_time = fl.StringField(max_length=11)
     ds_phone = fl.StringField(max_length=16)
     ds_ip_phone = fl.StringField(max_length=4)
 
     def fields(self):
-        return [self.ds_name, self.ds_address, ]
+        return self.get_all_fields(Drugstore, 'ds')
 
 
-class ServiceCenterList(Document):
+class ServiceCenter(VistaApiDocument):
     sc_brands = fl.StringField(max_length=20)
     sc_address = fl.StringField(max_length=50)
     sc_phone = fl.StringField(max_length=16)
+
+    def fields(self):
+        return self.get_all_fields(ServiceCenter, 'sc')
 
 
 # class DeferredDrug(Document):
