@@ -1,4 +1,4 @@
-from flask import jsonify, request, abort, current_app
+from flask import jsonify, request, abort
 
 from app.spravka import bp
 from app.models import Drugstore
@@ -7,7 +7,7 @@ from app.models import Drugstore
 @bp.route('/drugstores/', methods=['GET'])
 def get_all_drugstores():
 
-    """ Return list of all drugstores """
+    """ Return created record ID """
 
     drugstores = Drugstore.objects.all()
 
@@ -19,7 +19,7 @@ def get_all_drugstores():
 @bp.route('/drugstores/<drugstore_id>', methods=['GET'])
 def get_drugstore(drugstore_id):
 
-    """ Return one drugstore by it ID """
+    """ Return one record by it ID """
 
     drugstore = Drugstore.objects.get_or_404(id=drugstore_id)
 
@@ -31,11 +31,13 @@ def get_drugstore(drugstore_id):
 @bp.route('/drugstores/', methods=['POST'])
 def add_drugstore():
 
-    """ Return created drugstore ID """
+    """ Return created record ID """
 
     drugstore = Drugstore()
 
     for field in Drugstore.fields(Drugstore):
+        if field not in request.json:
+            abort(400)
         drugstore[field] = request.json[field]
     drugstore.save()
 
@@ -48,13 +50,21 @@ def add_drugstore():
 @bp.route('/drugstores/<drugstore_id>', methods=['PUT'])
 def update_drugstore(drugstore_id):
 
-    """ Return OK if record updated """
+    """ Update record by it ID and return OK """
 
     drugstore = Drugstore.objects.get_or_404(id=drugstore_id)
+    need_write_to_db = False
 
     for field in Drugstore.fields(Drugstore):
-        drugstore[field] = request.json[field]
-    drugstore.save()
+        if field not in request.json:
+            abort(400)
+
+        if drugstore[field] != request.json[field]:
+            drugstore[field] = request.json[field]
+            need_write_to_db = True
+
+    if need_write_to_db:
+        drugstore.save()
 
     return jsonify({
         "msg": "OK"

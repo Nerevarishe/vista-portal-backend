@@ -53,12 +53,18 @@ def update_service(service_id):
     """ Update record by it ID and return OK """
 
     service_center = ServiceCenter.objects.get_or_404(id=service_id)
+    need_write_to_db = False
 
     for field in ServiceCenter.fields(ServiceCenter):
         if field not in request.json:
             abort(400)
-        service_center[field] = request.json[field]
-    service_center.save()
+
+        if service_center[field] != request.json[field]:
+            service_center[field] = request.json[field]
+            need_write_to_db = True
+
+    if need_write_to_db:
+        service_center.save()
 
     return jsonify({
         "msg": "OK",

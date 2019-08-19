@@ -10,7 +10,8 @@ class Config(object):
 
     # Flask-MongoEngine Settings
     MONGODB_DB = 'vista_api'
-    MONGODB_HOST = '192.168.1.11'
+    # MONGODB_HOST = '192.168.1.11'
+    MONGODB_HOST = '10.0.0.1'
 
     # News posts per page
     NEWS_POST_PER_PAGE = 5

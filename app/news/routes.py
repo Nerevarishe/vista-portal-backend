@@ -39,7 +39,7 @@ def get_news_posts():
 @bp.route('/<news_post_id>', methods=['GET'])
 def get_news_post(news_post_id):
 
-    """ Return one News post by it ID """
+    """ Return one record by it ID """
 
     post = NewsPost.objects.get_or_404(id=news_post_id)
     return jsonify({
@@ -50,7 +50,7 @@ def get_news_post(news_post_id):
 @bp.route('/', methods=['POST'])
 def add_news_post():
 
-    """ Return status 201 if post added to DB and post ID"""
+    """ Return created record ID """
 
     if 'postBody' in request.json and request.json['postBody'] != '':
         post = NewsPost()
@@ -67,7 +67,7 @@ def add_news_post():
 @bp.route('/<news_post_id>', methods=['PUT'])
 def update_news_post(news_post_id):
 
-    """ Return OK if post updated """
+    """ Update record by it ID and return OK """
 
     if 'postBody' in request.json and request.json['postBody'] != '':
         post = NewsPost.objects.get_or_404(id=news_post_id)
@@ -88,7 +88,7 @@ def update_news_post(news_post_id):
 @bp.route('/<news_post_id>', methods=['DELETE'])
 def delete_news_post(news_post_id):
 
-    """ Return True if post deleted """
+    """ Delete record by it ID and return OK """
 
     post = NewsPost.objects.get_or_404(id=news_post_id)
     post.delete()
