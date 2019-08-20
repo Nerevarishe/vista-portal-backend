@@ -1,4 +1,4 @@
-from flask import jsonify, request, abort, current_app
+from flask import jsonify, request, abort
 
 from app.defectura import bp
 from app.models import DefecturaCard

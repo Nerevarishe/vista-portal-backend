@@ -1,4 +1,4 @@
-from flask import jsonify, request, abort, url_for
+from flask import jsonify, request, abort
 from flask_uploads import UploadNotAllowed
 
 from uuid import uuid4
