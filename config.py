@@ -10,9 +10,13 @@ class Config(object):
     STATIC_FOLDER = os.path.join(basedir, 'static')
 
     # Flask-MongoEngine Settings
-    MONGODB_DB = 'vista_api'
+    MONGODB_DB = 'vista_portal_api'
+    # TODO: Remove on production!
     # MONGODB_HOST = '192.168.1.11'
-    MONGODB_HOST = '10.0.0.1'
+    # MONGODB_HOST = '10.0.0.1'
+    MONGODB_HOST = 'mongo'
+    MONGODB_USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME') or ''
+    MONGODB_PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD') or ''
 
     # News posts per page
     NEWS_POST_PER_PAGE = 5

@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  vista_portal_api:
+    build: .
+    image: nerevarishe/vista_portal_api:latest
+    volumes:
+      - uploads:/srv/www/vista_portal_api/static/uploads
+    ports:
+      - 192.168.1.11:5001:5000
+    networks:
+      - vista_portal_network
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vista_portal_api
+      MONGO_INITDB_ROOT_PASSWORD: rfh98LKJh4a0x9u4Ld893mak211j
+
+  mongodb:
+    image: mongo
+    networks:
+      - vista_portal_network
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vista_portal_api
+      MONGO_INITDB_ROOT_PASSWORD: rfh98LKJh4a0x9u4Ld893mak211j
+
+volumes:
+  uploads:
+
+networks:
+  vista_portal_network:
+    name: vista_portal_network
