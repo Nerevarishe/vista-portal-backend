@@ -2,6 +2,7 @@ from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_jwt_extended import JWTManager
 from flask_uploads import configure_uploads, patch_request_class, UploadSet, IMAGES
+from flask_cors import CORS
 
 from config import Config
 
@@ -18,6 +19,9 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     jwt.init_app(app)
+
+    # Flask-Cors
+    CORS(app)
 
     # Flask-Uploads configuration
     configure_uploads(app, images)
