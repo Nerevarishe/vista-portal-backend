@@ -22,7 +22,7 @@ def get_news_posts():
 
     # Get paginated posts page
     _posts = []
-    posts = NewsPost.objects.paginate(page=page, per_page=per_page)
+    posts = NewsPost.objects.order_by('-date_created').paginate(page=page, per_page=per_page)
     for post in posts.items:
         _posts.append(post)
 

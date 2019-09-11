@@ -12,14 +12,14 @@ class Config(object):
     # Flask-MongoEngine Settings
     MONGODB_DB = 'vista_portal_api'
     # TODO: Remove on production!
-    # MONGODB_HOST = '192.168.1.11'
+    MONGODB_HOST = '192.168.1.11'
     # MONGODB_HOST = '10.0.0.1'
-    MONGODB_HOST = 'mongo'
-    MONGODB_USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME') or ''
-    MONGODB_PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD') or ''
+    # MONGODB_HOST = 'mongo'
+    # MONGODB_USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME') or ''
+    # MONGODB_PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD') or ''
 
     # News posts per page
-    NEWS_POST_PER_PAGE = 5
+    NEWS_POST_PER_PAGE = 3
 
     # Uploads DIR
     UPLOAD_PATH = os.path.join(STATIC_FOLDER, 'uploads')
