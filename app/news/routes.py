@@ -51,7 +51,7 @@ def add_news_post():
 
     """ Return created record ID """
 
-    if 'postBody' in request.json and request.json['postBody'] != '':
+    if 'postBody' in request.json and request.json['postBody'] != '' and request.json['postBody'] is not None:
         post = NewsPost()
         post.post_body = request.json['postBody']
         post.save()
