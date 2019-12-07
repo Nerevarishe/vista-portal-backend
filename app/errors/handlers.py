@@ -1,6 +1,10 @@
-from flask import jsonify, make_response
+from flask import jsonify, make_response, g
 from app.errors import bp
 
+from utils.check import is_g_obj_custom_http_error_msg_exist
+
+
+# TODO: Implement custom error msg to all errors handlers
 
 @bp.app_errorhandler(400)
 def bad_request(error):
@@ -28,6 +32,19 @@ def not_found(error):
     return make_response(jsonify({
         'error': '405 Method Not Allowed'
     })), 405
+
+
+@bp.app_errorhandler(409)
+def conflict(error):
+    if is_g_obj_custom_http_error_msg_exist():
+        msg = g.custom_http_error_msg
+        return make_response(jsonify({
+            'error': '409 ' + msg
+        })), 409
+
+    return make_response(jsonify({
+        'error': '409 Conflict'
+    })), 409
 
 
 @bp.app_errorhandler(500)

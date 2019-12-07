@@ -5,6 +5,8 @@ from datetime import datetime
 from app.news import bp
 from app.models import NewsPost
 
+from utils.check import is_request_json_field_exist
+
 
 @bp.route('/', methods=['GET'])
 def get_news_posts():

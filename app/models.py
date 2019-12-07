@@ -31,9 +31,9 @@ class VistaApiDocument(Document):
 
 
 class User(Document):
-    username = fl.StringField(max_length=20)
-    ip4_address = fl.StringField(max_length=15, required=True) # indexed
-    password_hash = fl.StringField()
+    username = fl.StringField(max_length=20, required=True, unique=True)
+    # ip4_address = fl.StringField(max_length=15, required=True) # indexed
+    password_hash = fl.StringField(max_length=94, required=True)
     refresh_token = fl.StringField()
     date_created = fl.DateTimeField(default=datetime.utcnow)
     date_edited = fl.DateTimeField(default=datetime.utcnow)
@@ -86,11 +86,3 @@ class ServiceCenter(VistaApiDocument):
 
     def fields(self):
         return self.get_all_fields(ServiceCenter, 'sc')
-
-
-# class DeferredDrug(Document):
-#     drug_name = fl.StringField(max_length=60) # indexed
-#     drug_amount = fl.IntField(max_value=100)
-#     comment = fl.StringField(max_length=200)
-#     date_created = fl.DateTimeField(default=datetime.utcnow)
-#     date_edited = fl.DateTimeField(default=datetime.utcnow)

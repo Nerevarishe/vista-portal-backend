@@ -3,6 +3,8 @@ from flask import jsonify, request, abort
 from app.defectura import bp
 from app.models import DefecturaCard
 
+from utils.check import is_request_json_field_exist
+
 
 @bp.route('/', methods=['GET'])
 def get_def_records():
