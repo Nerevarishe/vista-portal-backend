@@ -2,14 +2,9 @@ from tests import FlaskBaseTestCase
 from json import dumps
 from flask import jsonify
 from flask_jwt_extended import jwt_required
-from app.models import User
 
 
 class AuthTestCase(FlaskBaseTestCase):
-    def setUp(self) -> None:
-        super(AuthTestCase, self).setUp()
-        User.drop_collection()
-        self.User = User
 
     def test_register_user(self):
         """ Try register user """
@@ -156,8 +151,6 @@ class AuthTestCase(FlaskBaseTestCase):
 class AuthAccessCase(FlaskBaseTestCase):
     def setUp(self) -> None:
         super(AuthAccessCase, self).setUp()
-        User.drop_collection()
-        self.User = User
         @self.app.route('/test', methods=['GET'])
         @jwt_required
         def test_route():
