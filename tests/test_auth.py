@@ -1,7 +1,6 @@
 from tests import FlaskBaseTestCase
 from json import dumps
 from flask import jsonify
-from flask_mongoengine import MongoEngine
 from flask_jwt_extended import jwt_required
 from app.models import User
 
@@ -9,8 +8,6 @@ from app.models import User
 class AuthTestCase(FlaskBaseTestCase):
     def setUp(self) -> None:
         super(AuthTestCase, self).setUp()
-        db = MongoEngine()
-        db.init_app(self.app)
         User.drop_collection()
         self.User = User
 
@@ -159,8 +156,6 @@ class AuthTestCase(FlaskBaseTestCase):
 class AuthAccessCase(FlaskBaseTestCase):
     def setUp(self) -> None:
         super(AuthAccessCase, self).setUp()
-        db = MongoEngine()
-        db.init_app(self.app)
         User.drop_collection()
         self.User = User
         @self.app.route('/test', methods=['GET'])
