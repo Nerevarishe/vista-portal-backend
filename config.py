@@ -27,3 +27,16 @@ class Config(object):
     # Flask-Uploads
     UPLOADS_DEFAULT_DEST = UPLOAD_PATH
     UPLOADS_DEFAULT_URL = 'http://localhost:5000/static/uploads/'
+
+
+class TestConfig(Config):
+    TESTING = True
+
+    # Flask-MongoEngine Settings
+    MONGODB_DB = 'vista_portal_api_test'
+    # TODO: Remove on production!
+    # MONGODB_HOST = '192.168.1.11'
+    MONGODB_HOST = '10.0.0.1'
+    # MONGODB_HOST = 'mongo'
+    # MONGODB_USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME') or ''
+    # MONGODB_PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD') or ''

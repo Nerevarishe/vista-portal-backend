@@ -19,7 +19,7 @@ def get_news_posts():
 
     if 'page' in request.args and request.args['page'] != '':
         page = int(request.args['page'])
-    if 'per_page' in request.args and request.args['per_page'] != '':
+    if 'perPage' in request.args and request.args['per_page'] != '':
         per_page = int(request.args['per_page'])
 
     # Get paginated posts page
@@ -33,7 +33,9 @@ def get_news_posts():
         "postsPageHasNext": posts.has_next,
         "postsPageNextPageNumber": posts.next_num,
         "postsPageHasPrev": posts.has_prev,
-        "postsPagePrevPageNumber": posts.prev_num
+        "postsPagePrevPageNumber": posts.prev_num,
+        "dateCreated": '',
+        "dateEdited": ''
     })
 
 
@@ -44,7 +46,9 @@ def get_news_post(news_post_id):
 
     post = NewsPost.objects.get_or_404(id=news_post_id)
     return jsonify({
-        "post": post
+        "post": post,
+        "dateCreated": '',
+        "dateEdited": ''
     })
 
 
@@ -53,7 +57,7 @@ def add_news_post():
 
     """ Return created record ID """
 
-    if 'postBody' in request.json and request.json['postBody'] != '' and request.json['postBody'] is not None:
+    if is_request_json_field_exist('postBody') and request.json['postBody'] != '':
         post = NewsPost()
         post.post_body = request.json['postBody']
         post.save()

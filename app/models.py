@@ -6,10 +6,6 @@ from mongoengine import fields as fl
 
 
 class VistaApiDocument(Document):
-
-    date_created = fl.DateTimeField(default=datetime.utcnow)
-    date_edited = fl.DateTimeField(default=datetime.utcnow)
-
     @staticmethod
     def get_all_fields(document_class, search_query: str):
 
@@ -27,16 +23,17 @@ class VistaApiDocument(Document):
     def get_current_date():
         return (datetime.utcnow()).date()
 
+    date_created = fl.DateTimeField(default=datetime.utcnow)
+    date_edited = fl.DateTimeField(default=datetime.utcnow)
+
     meta = {'allow_inheritance': True}
 
 
-class User(Document):
+class User(VistaApiDocument):
     username = fl.StringField(max_length=20, required=True, unique=True)
     # ip4_address = fl.StringField(max_length=15, required=True) # indexed
     password_hash = fl.StringField(max_length=94, required=True)
     refresh_token = fl.StringField()
-    date_created = fl.DateTimeField(default=datetime.utcnow)
-    date_edited = fl.DateTimeField(default=datetime.utcnow)
 
     # TODO: change hashing!
     def hash_password(self, password):
@@ -45,6 +42,12 @@ class User(Document):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # def fields(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     return self.get_all_fields(User, '')
 
 # class TokenBlackList(Document):
 #     jti = fl.StringField(max_length=36)
@@ -67,22 +70,5 @@ class DefecturaCard(VistaApiDocument):
     date = fl.DateField(default=VistaApiDocument.get_current_date) # indexed
     # user = fl.ReferenceField(User)
 
-
-class Drugstore(VistaApiDocument):
-    ds_name = fl.StringField(max_length=50)
-    ds_address = fl.StringField(max_length=200)
-    ds_work_time = fl.StringField(max_length=11)
-    ds_phone = fl.StringField(max_length=16)
-    ds_ip_phone = fl.StringField(max_length=4)
-
-    def fields(self):
-        return self.get_all_fields(Drugstore, 'ds')
-
-
-class ServiceCenter(VistaApiDocument):
-    sc_brands = fl.StringField(max_length=20)
-    sc_address = fl.StringField(max_length=50)
-    sc_phone = fl.StringField(max_length=16)
-
-    def fields(self):
-        return self.get_all_fields(ServiceCenter, 'sc')
+    # def fields(self):
+    #     return self.get_all_fields(ServiceCenter, 'sc')

@@ -27,6 +27,7 @@ def register():
                            refresh_token=refresh_token), 201
         g.custom_http_error_msg = 'User already exist'
         abort(409)
+    abort(400)
 
 
 @bp.route('/login', methods=['POST'])
@@ -68,12 +69,3 @@ def refresh_tokens():
         current_user.save()
         return jsonify(access_token=access_token, refresh_token=refresh_token)
     abort(401)
-
-
-@bp.route('/test', methods=['GET'])
-@jwt_required
-def test_route():
-    return jsonify({
-        'msg': 'ok',
-        'destination': 'test auth route'
-    }), 200
