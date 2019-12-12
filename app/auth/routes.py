@@ -10,40 +10,52 @@ from utils.check import is_request_json_field_exist
 
 @bp.route('/register', methods=['POST'])
 def register():
+    # If fields correct:
     if is_request_json_field_exist('username') and is_request_json_field_exist('password'):
         username = request.json.get('username', None)
         password = request.json.get('password', None)
         access_token = create_access_token(identity=username)
         refresh_token = create_refresh_token(identity=username)
+        # TODO: Add check for ip4_address field exist
+        ip4_address = request.headers.environ.get('REMOTE_ADDR', None) # check HTTP_X_FORWARDED_FOR
 
         # Check username already exist
         try:
             User.objects.get(username=username)
+        # If username does not exist create new user:
         except DoesNotExist:
-            user = User(username=username, refresh_token=refresh_token)
+            user = User(username=username, ip4_address=ip4_address, refresh_token=refresh_token)
             user.hash_password(password=password)
             user.save()
             return jsonify(userId=str(user.id), username=username, access_token=access_token,
                            refresh_token=refresh_token), 201
+        # If username exist - abort with 409 error
         g.custom_http_error_msg = 'User already exist'
         abort(409)
+    # If something wrong with fields
     abort(400)
 
 
 @bp.route('/login', methods=['POST'])
 def login():
+    # Check if fields correct
     if is_request_json_field_exist('username') and is_request_json_field_exist('password'):
         username = request.json.get('username', None)
         password = request.json.get('password', None)
 
+        # Try to get user from DB by username or return 404:
         user = User.objects.get_or_404(username=username)
+
+        # Check user password and if it correct return access and refresh tokens
         if user.check_password(password):
             access_token = create_access_token(identity=username)
             refresh_token = create_refresh_token(identity=username)
             user.refresh_token = refresh_token
             user.save()
             return jsonify(access_token=access_token, refresh_token=refresh_token)
+        # If password wrong return 401
         abort(401)
+    # If something wrong with fields
     abort(400)
 
 
