@@ -14,7 +14,7 @@ def bad_request(error):
 
 
 @bp.app_errorhandler(401)
-def not_found(error):
+def unauthorized(error):
     return make_response(jsonify({
         'error': '401 Unauthorized'
     })), 401
@@ -28,7 +28,7 @@ def not_found(error):
 
 
 @bp.app_errorhandler(405)
-def not_found(error):
+def method_not_allowed(error):
     return make_response(jsonify({
         'error': '405 Method Not Allowed'
     })), 405
@@ -48,7 +48,7 @@ def conflict(error):
 
 
 @bp.app_errorhandler(500)
-def bad_request(error):
+def internal_server_error(error):
     return make_response(jsonify({
         'error': '500 Internal Server Error'
     })), 500
