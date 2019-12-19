@@ -4,6 +4,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mongoengine import Document
 from mongoengine import fields as fl
 
+SHIFT_START_TIME = (
+    (730, '7:30'),
+    (800, '8:00'),
+    (830, '8:30'),
+    (900, '9:00'),
+    (1000, '10:00')
+)
+
 
 class VistaApiDocument(Document):
 
@@ -74,19 +82,19 @@ class DefecturaCard(VistaApiDocument):
 
 
 class Employee(VistaApiDocument):
-    PREFFERED_TIME_OPTIONS = (
-        (730, '7:30'),
-        (800, '8:00'),
-        (830, '8:30'),
-        (900, '9:00'),
-        (1000, '10:00')
-    )
-
     first_name = fl.StringField(max_length=30, required=True)
     last_name = fl.StringField(max_length=30, required=True)  # indexed
     patronymic = fl.StringField(max_length=30)
     active = fl.BooleanField(default=True)
-    preffered_time = fl.IntField(max_value=1000, choices=PREFFERED_TIME_OPTIONS)
+    preffered_time = fl.IntField(max_value=1000, choices=SHIFT_START_TIME)
     start_work_date = fl.DateField(default=VistaApiDocument.get_current_date)
     date_of_dismissal = fl.DateField()
     vacation_days = fl.IntField(default=0)
+
+
+class Schedule(VistaApiDocument):
+    employee = fl.ReferenceField(Employee)
+    work_day = fl.DateField(required=True)  # indexed
+    shift_start_time = fl.IntField(max_value=1000, choices=SHIFT_START_TIME, required=True)
+    vacation_start_date = fl.DateField()
+    vacation_end_date = fl.DateField()

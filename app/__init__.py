@@ -46,4 +46,7 @@ def create_app(config_class=Config):
     from app.empl_manage import bp as empl_bp
     app.register_blueprint(empl_bp, url_prefix='/empl_manage')
 
+    from app.schedule import bp as schedule_bp
+    app.register_blueprint(schedule_bp, url_prefix='/schedule')
+
     return app
