@@ -3,6 +3,7 @@ from config import TestConfig
 from app import create_app
 from flask_mongoengine import MongoEngine
 from mongoengine import connect
+from json import dumps
 
 
 class FlaskBaseTestCase(unittest.TestCase):
@@ -17,3 +18,16 @@ class FlaskBaseTestCase(unittest.TestCase):
         self.app_context.pop()
         db = connect(self.app.config['MONGODB_DB'], host=self.app.config['MONGODB_HOST'])
         db.drop_database(self.app.config['MONGODB_DB'])
+
+    def create_user(self):
+        client = self.app.test_client()
+        # Create new User
+        response = client.post('/auth/register', data=dumps({
+            'username': 'admin',
+            'password': 'admin'
+        }), content_type='application/json')
+        if response.status_code == 201:
+            access_token = response.json['access_token']
+            authorization = 'Bearer ' + access_token
+            return authorization
+        return False
