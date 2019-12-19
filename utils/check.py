@@ -4,7 +4,7 @@ from flask import request, g
 def is_request_json_field_exist(field):
     if request.json:
         try:
-            if request.json[field]:
+            if request.json[field] or request.json[field] == False:
                 return True
         except KeyError:
             return False
