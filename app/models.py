@@ -71,3 +71,22 @@ class DefecturaCard(VistaApiDocument):
     employee_name = fl.StringField(max_length=30, required=True)
     in_zd = fl.BooleanField(default=False)  # indexed
     date = fl.DateField(default=VistaApiDocument.get_current_date)  # indexed
+
+
+class Employee(VistaApiDocument):
+    PREFFERED_TIME_OPTIONS = (
+        (730, '7:30'),
+        (800, '8:00'),
+        (830, '8:30'),
+        (900, '9:00'),
+        (1000, '10:00')
+    )
+
+    first_name = fl.StringField(max_length=30, required=True)
+    last_name = fl.StringField(max_length=30, required=True)  # indexed
+    patronymic = fl.StringField(max_length=30)
+    active = fl.BooleanField(default=True)
+    preffered_time = fl.IntField(max_value=1000, choices=PREFFERED_TIME_OPTIONS)
+    start_work_date = fl.DateField(default=VistaApiDocument.get_current_date)
+    date_of_dismissal = fl.DateField()
+    vacation_days = fl.IntField(default=0)

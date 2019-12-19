@@ -43,4 +43,7 @@ def create_app(config_class=Config):
     from app.defectura import bp as defectura_bp
     app.register_blueprint(defectura_bp, url_prefix='/defectura')
 
+    from app.empl_manage import bp as empl_bp
+    app.register_blueprint(empl_bp, url_prefix='/empl_manage')
+
     return app
