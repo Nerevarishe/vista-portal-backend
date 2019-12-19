@@ -11,18 +11,18 @@ class VistaApiDocument(Document):
         'abstract': True
     }
 
-    @staticmethod
-    def get_all_fields(document_class, search_query: str):
-
-        """ Return all user defined fields from model class object
-         fields - must be Class
-         search_query - string - prefix for fields in class"""
-
-        model_fields = []
-        for field in dir(document_class):
-            if field[:len(search_query)] == search_query:
-                model_fields.append(field)
-        return model_fields
+    # @staticmethod
+    # def get_all_fields(document_class, search_query: str):
+    #
+    #     """ Return all user defined fields from model class object
+    #      fields - must be Class
+    #      search_query - string - prefix for fields in class"""
+    #
+    #     model_fields = []
+    #     for field in dir(document_class):
+    #         if field[:len(search_query)] == search_query:
+    #             model_fields.append(field)
+    #     return model_fields
 
     @staticmethod
     def get_current_date():
@@ -34,7 +34,7 @@ class VistaApiDocument(Document):
 
 class User(VistaApiDocument):
     username = fl.StringField(max_length=20, required=True, unique=True)
-    ip4_address = fl.StringField(max_length=15, required=True) # indexed
+    ip4_address = fl.StringField(max_length=15, required=True)  # indexed
     password_hash = fl.StringField(max_length=94, required=True)
     refresh_token = fl.StringField()
 
@@ -66,12 +66,8 @@ class NewsPost(VistaApiDocument):
 
 
 class DefecturaCard(VistaApiDocument):
-    drug_name = fl.StringField(max_length=60)
+    drug_name = fl.StringField(max_length=60, required=True)
     comment = fl.StringField(max_length=200)
-    employee_name = fl.StringField(max_length=30)
-    in_zd = fl.BooleanField(default=False) # indexed
-    date = fl.DateField(default=VistaApiDocument.get_current_date) # indexed
-    # user = fl.ReferenceField(User)
-
-    # def fields(self):
-    #     return self.get_all_fields(ServiceCenter, 'sc')
+    employee_name = fl.StringField(max_length=30, required=True)
+    in_zd = fl.BooleanField(default=False)  # indexed
+    date = fl.DateField(default=VistaApiDocument.get_current_date)  # indexed

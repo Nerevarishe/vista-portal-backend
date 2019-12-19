@@ -21,44 +21,23 @@ def get_def_records():
     })
 
 
-@bp.route('/<record_id>', methods=['GET'])
-def get_def_record(record_id):
-
-    """ Return one defectura record by it ID """
-
-    record = DefecturaCard.objects.get_or_404(id=record_id)
-
-    return jsonify({
-        'drug': record
-    })
-
-
 @bp.route('/', methods=['POST'])
 def create_new_def_record():
 
     """ Create new defectura record and return it ID """
 
     record = DefecturaCard()
-    try:
-        if request.json['drugName'] != '' and request.json['employeeName'] != '':
-            record.drug_name = request.json['drugName']
-            record.employee_name = request.json['employeeName']
-    except KeyError:
-        abort(400)
-    else:
-        try:
-            if 'comment' in request.json:
-                record.comment = request.json['comment']
-            if 'inZd' in request.json:
-                record.in_zd = request.json['inZd']
-        except KeyError:
-            pass
 
+    if is_request_json_field_exist('drugName') and is_request_json_field_exist('employeeName'):
+        record.drug_name = request.json['drugName']
+        record.employee_name = request.json['employeeName']
+        if is_request_json_field_exist('comment'):
+            record.comment = request.json['comment']
         record.save()
         return jsonify({
-            "msg": "OK",
-            "recordId": str(record.id)
-        }), 201
+            'msg': 'OK',
+            'recordId': str(record.id)
+        })
     abort(400)
 
 
