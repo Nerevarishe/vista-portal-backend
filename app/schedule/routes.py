@@ -46,6 +46,7 @@ def generate_schedule():
             # Get employee from DB
             employee = Employee.objects.get_or_404(id=employee_id)
             # Make variables from json fields
+            # TODO: Implement checks if this fields exists
             shift_type = info['shiftType']
             shift_start_time = info['shiftStartTime']
             first_date_of_shift = info['firstDateOfShift']
@@ -53,6 +54,9 @@ def generate_schedule():
             is_second_day_of_shift = info['isSecondDayOfShift']
             # Set day counter to zero
             day_counter = 0
+            # Get number of day in week to set day counter for 5/2 shift:
+            if shift_type == 52:
+                day_counter = datetime(year, month, first_date_of_shift).weekday()
             # For day in range of days in month plus one day - because range func start count from zero
             for day in range(days_in_month + 1):
                 # Skip day 0 and all days before first date of shift
@@ -91,6 +95,7 @@ def generate_schedule():
                         is_first_day_of_shift = True
                 # If shift type 5/2
                 if shift_type == 52:
+                    # If day counter < 5 - then this work days
                     if day_counter < 5:
                         schedule = Schedule()
                         schedule.employee = employee
@@ -98,8 +103,10 @@ def generate_schedule():
                         schedule.shift_start_time = shift_start_time
                         schedule.save()
                         day_counter += 1
+                    # If day counter >= 5 - then weekends start
                     elif day_counter >= 5:
                         day_counter += 1
+                    # If day counter equals 7 - weekends end, start new work week
                     if day_counter == 7:
                         day_counter = 0
         return 'DONE!'
