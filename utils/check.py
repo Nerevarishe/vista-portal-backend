@@ -2,6 +2,7 @@ from flask import request, g
 
 
 def is_request_json_field_exist(field):
+    # TODO: Implement check nested fields in json
     if request.json:
         try:
             if request.json[field] or request.json[field] == False:
