@@ -51,6 +51,11 @@ def generate_schedule():
                                                     '%Y-%m-%d').date()  # info['firstDateOfShift']
             is_first_day_of_shift = info['isFirstDayOfShift']
             is_second_day_of_shift = info['isSecondDayOfShift']
+            # If vacation in this month
+            vacation_start_date = datetime.strptime(info['vacationStartDate'], '%Y-%m-%d').date()
+            vacation_end_date = datetime.strptime(info['vacationEndDate'], '%Y-%m-%d').date()
+            # Calc vacation days
+            vacation_days = vacation_end_date - vacation_start_date
             # Set day counter to zero
             day_counter = timedelta(days=0)
             # Get number of day in week to set day counter for 5/2 shift:
@@ -59,55 +64,69 @@ def generate_schedule():
             # For day in range of days in month plus one day - because range func start count from zero
             for day in range(days_in_month):
                 day = day + 1
-                # Skip day 0 and all days before first date of shift
-                if datetime(year, month, day).date() < first_date_of_shift:
-                    continue
-                # If shift type 2/2
-                if shift_type == 22:
-                    # If firs day of 2/2 shift schedule:
-                    if is_first_day_of_shift:
-                        if day_counter == timedelta(days=0) or day_counter < timedelta(days=2):
+                # Skip all days before first date of shift or vacation
+                if first_date_of_shift < vacation_start_date:
+                    if datetime(year, month, day).date() < first_date_of_shift:
+                        continue
+                    # If day between vacation start/end dates
+                    if vacation_start_date <= datetime(year, month, day).date() <= vacation_end_date:
+                        schedule = Schedule()
+                        schedule.employee = employee
+                        schedule.shift_start_time = 0
+                        schedule.vacation_day = datetime(year=year, month=month, day=day).date()
+                        schedule.save()
+                        if shift_type == 52:
+                            day_counter = timedelta(days=(datetime(year, month, vacation_end_date.day)
+                                                          + timedelta(days=1)).weekday())
+                        continue
+                    # If shift type 2/2
+                    if shift_type == 22:
+                        # If firs day of 2/2 shift schedule:
+                        if is_first_day_of_shift:
+                            if day_counter == timedelta(days=0) or day_counter < timedelta(days=2):
+                                schedule = Schedule()
+                                schedule.employee = employee
+                                schedule.work_day = datetime(year=year, month=month, day=day).date()
+                                schedule.shift_start_time = shift_start_time
+                                schedule.save()
+                                day_counter += timedelta(days=1)
+                            # If day counter equally 4, then this last weekend day - set it to zero
+                            if day_counter == timedelta(days=4):
+                                day_counter = timedelta(days=0)
+                            # If day counter equally or bigger than 2, then weekend starts:
+                            elif day_counter >= timedelta(days=2):
+                                day_counter += timedelta(days=1)
+
+                        # If second day of 2/2 shift schedule:
+                        elif is_second_day_of_shift:
+                            # Set day counter to 2, because this last work day of 2/2 shift
+                            day_counter = timedelta(days=2)
                             schedule = Schedule()
                             schedule.employee = employee
                             schedule.work_day = datetime(year=year, month=month, day=day).date()
                             schedule.shift_start_time = shift_start_time
                             schedule.save()
                             day_counter += timedelta(days=1)
-                        # If day counter equally 4, then this last weekend day - set it to zero
-                        if day_counter == timedelta(days=4):
-                            day_counter = timedelta(days=0)
-                        # If day counter equally or bigger than 2, then weekend starts:
-                        elif day_counter >= timedelta(days=2):
+                            # Reverse to first day of shift flow
+                            is_second_day_of_shift = False
+                            is_first_day_of_shift = True
+                    # If shift type 5/2
+                    if shift_type == 52:
+                        # If day counter < 5 - then this work days
+                        if day_counter.days < 5:
+                            schedule = Schedule()
+                            schedule.employee = employee
+                            schedule.work_day = datetime(year=year, month=month, day=day).date()
+                            schedule.shift_start_time = shift_start_time
+                            schedule.save()
                             day_counter += timedelta(days=1)
-
-                    # If second day of 2/2 shift schedule:
-                    elif is_second_day_of_shift:
-                        # Set day counter to 2, because this last work day of 2/2 shift
-                        day_counter = timedelta(days=2)
-                        schedule = Schedule()
-                        schedule.employee = employee
-                        schedule.work_day = datetime(year=year, month=month, day=day).date()
-                        schedule.shift_start_time = shift_start_time
-                        schedule.save()
-                        day_counter += timedelta(days=1)
-                        # Reverse to first day of shift flow
-                        is_second_day_of_shift = False
-                        is_first_day_of_shift = True
-                # If shift type 5/2
-                if shift_type == 52:
-                    # If day counter < 5 - then this work days
-                    if day_counter.days < 5:
-                        schedule = Schedule()
-                        schedule.employee = employee
-                        schedule.work_day = datetime(year=year, month=month, day=day).date()
-                        schedule.shift_start_time = shift_start_time
-                        schedule.save()
-                        day_counter += timedelta(days=1)
-                    # If day counter >= 5 - then weekends start
-                    elif day_counter.days >= 5:
-                        day_counter += timedelta(days=1)
-                    # If day counter equals 7 - weekends end, start new work week
-                    if day_counter.days == 7:
-                        day_counter = timedelta(days=0)
+                        # If day counter >= 5 - then weekends start
+                        elif day_counter.days >= 5:
+                            day_counter += timedelta(days=1)
+                        # If day counter equals 7 - weekends end, start new work week
+                        if day_counter.days == 7:
+                            day_counter = timedelta(days=0)
+                else:
+                    pass
         return 'DONE!'
     abort(400)
