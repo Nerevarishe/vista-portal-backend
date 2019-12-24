@@ -33,6 +33,7 @@ def generate_schedule():
     firstDateOfShift - What is the first employee shift date in a month
     isFirstDayOfShift, isSecondDayOfShift if firstDateOfShift get in first day of 2\2 shift, or second day
     shiftType - type of employee shift: 22 (2/2) - 2 work days, 2 weekends, 52 (5/2) - 5 work days, 2 weekends
+    vacationStartDate, vacationEndDate: start and end date of vacation
     """
     if is_request_json_field_exist('employeeIds') and is_request_json_field_exist('year') \
             and is_request_json_field_exist('month'):
@@ -50,7 +51,7 @@ def generate_schedule():
             shift_type = info['shiftType']
             shift_start_time = info['shiftStartTime']
             first_date_of_shift = datetime.strptime(info['firstDateOfShift'],
-                                                    '%Y-%m-%d').date()  # info['firstDateOfShift']
+                                                    '%Y-%m-%d').date()
             is_first_day_of_shift = info['isFirstDayOfShift']
             is_second_day_of_shift = info['isSecondDayOfShift']
             # If vacation in this month
