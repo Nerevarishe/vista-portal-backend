@@ -43,6 +43,8 @@ def generate_schedule():
         for employee_id, info in request.json['employeeIds'].items():
             # Get employee from DB
             employee = Employee.objects.get_or_404(id=employee_id)
+            # If all work, then update employee document with new data
+            can_update_employee_document = False
             # Make variables from json fields
             # TODO: Implement checks if this fields exists
             shift_type = info['shiftType']
@@ -55,7 +57,7 @@ def generate_schedule():
             vacation_start_date = datetime.strptime(info['vacationStartDate'], '%Y-%m-%d').date()
             vacation_end_date = datetime.strptime(info['vacationEndDate'], '%Y-%m-%d').date()
             # Calc vacation days
-            vacation_days = vacation_end_date - vacation_start_date
+            vacation_days = (vacation_end_date - vacation_start_date).days
             # Set day counter to zero
             day_counter = timedelta(days=0)
             # Get number of day in week to set day counter for 5/2 shift:
@@ -75,9 +77,15 @@ def generate_schedule():
                         schedule.shift_start_time = 0
                         schedule.vacation_day = datetime(year=year, month=month, day=day).date()
                         schedule.save()
+                        # if employee in 5/2 shift
                         if shift_type == 52:
+                            # Set date counter to next week day from last vacation day
                             day_counter = timedelta(days=(datetime(year, month, vacation_end_date.day)
                                                           + timedelta(days=1)).weekday())
+                        # if employee in 2/2 shift
+                        if shift_type == 22:
+                            # Set date counter to zero for first work day
+                            day_counter = timedelta(days=0)
                         continue
                     # If shift type 2/2
                     if shift_type == 22:
@@ -126,7 +134,19 @@ def generate_schedule():
                         # If day counter equals 7 - weekends end, start new work week
                         if day_counter.days == 7:
                             day_counter = timedelta(days=0)
+                    can_update_employee_document = True
                 else:
                     pass
+
+            # If all done - update employee document
+            if can_update_employee_document:
+                # Change vacation days and set vacation dates in employee document:
+                employee.update(add_to_set__vacation_dates=[employee.VacationDates(
+                    vacation_start_date=vacation_start_date,
+                    vacation_end_date=vacation_end_date
+                )])
+                employee.vacation_days -= vacation_days
+                employee.date_edited = datetime.utcnow()
+                employee.save()
         return 'DONE!'
     abort(400)
