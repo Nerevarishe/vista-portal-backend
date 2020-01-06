@@ -5,11 +5,11 @@ from uuid import uuid4
 
 from app import images
 from app.uploads import bp
-
+from flask import current_app
 
 @bp.route('/', methods=['POST'])
 def upload():
-    image = request.files.get('image')
+    image = request.files.get('upload')
 
     if not image:
         abort(400)
@@ -26,7 +26,7 @@ def upload():
         abort(403)
     else:
         return jsonify({
-            "msg": "OK",
+            "url": current_app.config['UPLOADS_DEFAULT_URL'] + 'images/' + image.filename
         }), 201
     abort(400)
 
