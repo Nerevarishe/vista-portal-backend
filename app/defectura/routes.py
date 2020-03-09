@@ -14,42 +14,43 @@ def get_def_records():
     records = DefecturaCard.objects
     # records_list = records.filter(in_zd=False).order_by('-date')
     records_list = records.aggregate(
+        # Select documents that not in ZD
         {
             '$match': {
                 'in_zd': False
             }
         },
+        # Sort by date_edited for last position added so that it is first in the list
         {
-            '$addFields': {
-                'dateByTimestamp': {
-                    '$toLong': '$date'
-                }
+            '$sort': {
+                'date_edited': -1
             }
         },
+        # Group by date field
         {
             '$group': {
-                '_id': '$dateByTimestamp',
+                '_id': {
+                    # Convert date to timestamp
+                    '$toLong': '$date'
+                },
                 'drugs': {
                     '$push': {
-                        'id': '$id',
                         'drugName': '$drug_name',
                         'comment': '$comment',
                         'employeeName': '$employee_name',
                         'dateEdited': {
+                            # Convert date to timestamp
                             '$toLong': '$date_edited'
+                        },
+                        'objectId': {
+                            # Convert ObjectId to string
+                            '$toString': '$_id'
                         }
                     }
                 }
             }
         },
-        {
-            '$unwind': '$drugs'
-        },
-        {
-            '$sort': {
-                'drugs.dateEdited': -1
-            }
-        },
+        # Sort current (last) day was the first in the list
         {
             '$sort': {
                 '_id': -1
