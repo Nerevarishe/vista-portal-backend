@@ -12,7 +12,52 @@ def get_def_records():
     """ Return all defectura cards """
 
     records = DefecturaCard.objects
-    records_list = records.filter(in_zd=False).order_by('-date')
+    # records_list = records.filter(in_zd=False).order_by('-date')
+    records_list = records.aggregate(
+        {
+            '$match': {
+                'in_zd': False
+            }
+        },
+        {
+            '$addFields': {
+                'dateByTimestamp': {
+                    '$toLong': '$date'
+                }
+            }
+        },
+        {
+            '$group': {
+                '_id': '$dateByTimestamp',
+                'drugs': {
+                    '$push': {
+                        'id': '$id',
+                        'drugName': '$drug_name',
+                        'comment': '$comment',
+                        'employeeName': '$employee_name',
+                        'dateEdited': {
+                            '$toLong': '$date_edited'
+                        }
+                    }
+                }
+            }
+        },
+        {
+            '$unwind': '$drugs'
+        },
+        {
+            '$sort': {
+                'drugs.dateEdited': -1
+            }
+        },
+        {
+            '$sort': {
+                '_id': -1
+            }
+        }
+    )
+
+    records_list = list(records_list)
     records_list_in_zd = records.filter(in_zd=True).order_by('drug_name')
 
     return jsonify({
