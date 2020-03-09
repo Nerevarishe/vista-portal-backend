@@ -83,7 +83,7 @@ def create_new_def_record():
         return jsonify({
             'msg': 'OK',
             'recordId': str(record.id)
-        })
+        }), 201
     abort(400)
 
 
