@@ -3,6 +3,8 @@ from flask import jsonify, request, abort
 from app.defectura import bp
 from app.models import DefecturaCard
 
+import datetime
+
 from utils.check import is_request_json_field_exist
 
 
@@ -112,3 +114,15 @@ def toggle_zd(record_id):
     return jsonify({
         "msg": "OK"
     })
+
+
+@bp.route('/card/<date>', methods=['DELETE'])
+def del_defectura_by_date(date):
+    date = float(date) / 1000
+    date = datetime.date.fromtimestamp(date).isoformat()
+    print(date)
+    records = DefecturaCard.objects.filter(date=date)
+    print(records)
+    for record in records:
+        record.delete()
+    return {"msg": "OK"}

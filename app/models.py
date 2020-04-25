@@ -33,10 +33,10 @@ class VistaApiDocument(Document):
     #         if field[:len(search_query)] == search_query:
     #             model_fields.append(field)
     #     return model_fields
-
-    @staticmethod
-    def get_current_date():
-        return (datetime.utcnow()).date()
+    #
+    # @staticmethod
+    # def get_current_date():
+    #     return (datetime.utcnow()).date()
 
     date_created = fl.DateTimeField(default=datetime.utcnow)
     date_edited = fl.DateTimeField(default=datetime.utcnow)
@@ -80,7 +80,7 @@ class DefecturaCard(VistaApiDocument):
     comment = fl.StringField(max_length=200)
     employee_name = fl.StringField(max_length=30, required=True)
     in_zd = fl.BooleanField(default=False)  # indexed
-    date = fl.DateField(default=VistaApiDocument.get_current_date)  # indexed
+    date = fl.DateField(default=(datetime.utcnow()).date())  # indexed
 
 
 class Employee(VistaApiDocument):
@@ -94,7 +94,7 @@ class Employee(VistaApiDocument):
     patronymic = fl.StringField(max_length=30)
     active = fl.BooleanField(default=True)
     preffered_time = fl.IntField(max_value=1000, choices=SHIFT_START_TIME)
-    start_work_date = fl.DateField(default=VistaApiDocument.get_current_date)
+    start_work_date = fl.DateField(default=(datetime.utcnow()).date())
     date_of_dismissal = fl.DateField()
     vacation_days = fl.IntField(default=0)
     vacation_dates = fl.EmbeddedDocumentListField(VacationDates)
