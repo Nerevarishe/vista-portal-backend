@@ -47,6 +47,7 @@ class User(VistaApiDocument):
     ip4_address = fl.StringField(max_length=15, required=True)  # indexed
     password_hash = fl.StringField(max_length=94, required=True)
     refresh_token = fl.StringField()
+    role = fl.StringField(max_length=20)
 
     # TODO: change hashing!
     def hash_password(self, password):
