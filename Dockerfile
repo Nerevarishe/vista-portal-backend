@@ -1,10 +1,14 @@
 FROM python:alpine
 
-WORKDIR /srv/www/vista_portal_api/
+WORKDIR /srv/www
 
-COPY . .
+RUN apk update \
+&& apk install --no-cache git build-base \
+&& git clone https://github.com/Nerevarishe/vista-portal-backend.git \
+&& pip install -r --no-cache-dir ./vista-portal-backend/requirements.txt \
+&& apk del git build-base
 
-RUN pip install -r requirements.txt --no-cache-dir
+WORKDIR /srv/www/vista-portal-backend
 
 EXPOSE 5000
 
