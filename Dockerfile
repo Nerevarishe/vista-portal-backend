@@ -3,9 +3,9 @@ FROM python:alpine
 WORKDIR /srv/www
 
 RUN apk update \
-&& apk install --no-cache git build-base \
+&& apk add --no-cache git build-base \
 && git clone https://github.com/Nerevarishe/vista-portal-backend.git \
-&& pip install -r --no-cache-dir ./vista-portal-backend/requirements.txt \
+&& pip install -r ./vista-portal-backend/requirements.txt --no-cache-dir \
 && apk del git build-base
 
 WORKDIR /srv/www/vista-portal-backend
