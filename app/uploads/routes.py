@@ -7,6 +7,7 @@ from app import images
 from app.uploads import bp
 from flask import current_app
 
+
 @bp.route('/', methods=['POST'])
 def upload():
     image = request.files.get('upload')

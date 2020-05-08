@@ -11,10 +11,11 @@ class Config(object):
 
     # Flask-MongoEngine Settings
     MONGODB_DB = 'vista-portal'
-    # TODO: Remove on production!
     MONGODB_HOST = 'db'
-    MONGODB_USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME') or ''
-    MONGODB_PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD') or ''
+    # MONGODB_USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME') or ''
+    # MONGODB_PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD') or ''
+    # MONGODB_USERNAME = 'vista-portal'
+    # MONGODB_PASSWORD = 'rfh98LKJh4a0x9u4Ld893mak211j'
 
     # News posts per page
     NEWS_POST_PER_PAGE = 3
@@ -24,7 +25,7 @@ class Config(object):
 
     # Flask-Uploads
     UPLOADS_DEFAULT_DEST = UPLOAD_PATH
-    UPLOADS_DEFAULT_URL = 'http://localhost:5000/static/uploads/'
+    UPLOADS_DEFAULT_URL = 'http://192.168.56.112:5000/static/uploads/'
 
 
 class TestConfig(Config):
