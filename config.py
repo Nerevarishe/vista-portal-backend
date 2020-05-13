@@ -13,8 +13,8 @@ class Config(object):
     MONGODB_DB = os.environ.get('MONGODB_DB') or 'test'
     MONGODB_HOST = os.environ.get('MONGODB_HOST') or 'localhost'
     MONGODB_PORT = os.environ.get('MONGODB_PORT') or 27017
-    MONGODB_USERNAME = os.environ.get('MONGO_USERNAME') or ''
-    MONGODB_PASSWORD = os.environ.get('MONGO_PASSWORD') or ''
+    MONGODB_USERNAME = os.environ.get('MONGODB_USERNAME') or ''
+    MONGODB_PASSWORD = os.environ.get('MONGODB_PASSWORD') or ''
 
     # News posts per page
     NEWS_POST_PER_PAGE = 3
@@ -34,4 +34,3 @@ class TestConfig(Config):
     MONGODB_DB = 'vista-portal-backend-test'
     # TODO: Remove on production!
     MONGODB_HOST = '10.0.0.1'
-
